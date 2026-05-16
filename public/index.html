@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="Midnight Money Coach - AI-powered budgeting and savings insights designed for Indian Gen Z." />
+  <title>Midnight Money Coach — Find your leaks. Save your money.</title>
+
+  <!-- Fonts: Bricolage Grotesque (display) + Plus Jakarta Sans (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Tailwind via CDN with custom config -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['"Bricolage Grotesque"', 'system-ui', 'sans-serif'],
+            sans:    ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            mono:    ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+          },
+          colors: {
+            ink:    '#000000',
+            paper:  '#0a0a0b',
+            card:   '#0f0f12',
+            line:   'rgba(255,255,255,0.08)',
+            'line-strong': 'rgba(255,255,255,0.14)',
+            mute:   '#8a8a93',
+            neon:   '#a78bfa',
+            'neon-2': '#22d3ee',
+            danger: '#f87171',
+            warn:   '#fbbf24',
+            good:   '#34d399',
+          },
+          boxShadow: {
+            'glow-neon': '0 0 40px rgba(167, 139, 250, 0.35)',
+            'glow-cyan': '0 0 40px rgba(34, 211, 238, 0.25)',
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* ============ BASE ============ */
+    html, body {
+      background: #000;
+      color: #fff;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+    * { -webkit-tap-highlight-color: transparent; }
+
+    /* Selection */
+    ::selection { background: #a78bfa; color: #000; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-track { background: #000; }
+    ::-webkit-scrollbar-thumb { background: #1a1a1f; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #2a2a30; }
+
+    /* ============ GRID BACKDROP ============ */
+    .grid-backdrop {
+      background-image:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 80%);
+      -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 80%);
+    }
+
+    /* ============ AURORA GLOW ============ */
+    .aurora {
+      position: absolute;
+      inset: -20%;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(80px);
+      opacity: 0.55;
+    }
+    .aurora::before, .aurora::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+    }
+    .aurora::before {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, #a78bfa 0%, transparent 70%);
+      top: -10%; left: -10%;
+      animation: float1 18s ease-in-out infinite;
+    }
+    .aurora::after {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, #22d3ee 0%, transparent 70%);
+      top: 20%; right: -10%;
+      animation: float2 22s ease-in-out infinite;
+    }
+    @keyframes float1 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50%      { transform: translate(80px, 60px) scale(1.1); }
+    }
+    @keyframes float2 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50%      { transform: translate(-60px, 80px) scale(1.15); }
+    }
+
+    /* ============ TEXT GRADIENT ============ */
+    .text-gradient {
+      background: linear-gradient(135deg, #fff 0%, #a78bfa 50%, #22d3ee 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* ============ GLASS CARD ============ */
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+    .card:hover { border-color: rgba(255,255,255,0.16); }
+
+    /* ============ BUTTON: NEON ============ */
+    .btn-neon {
+      position: relative;
+      background: #fff;
+      color: #000;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      padding: 16px 28px;
+      border-radius: 999px;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      overflow: hidden;
+    }
+    .btn-neon:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(167, 139, 250, 0.4), 0 0 0 1px rgba(255,255,255,0.1);
+    }
+    .btn-neon:active { transform: translateY(0); }
+    .btn-neon:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* ============ BUTTON: GHOST ============ */
+    .btn-ghost {
+      background: transparent;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.16);
+      padding: 16px 28px;
+      border-radius: 999px;
+      font-weight: 600;
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-ghost:hover {
+      border-color: rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.04);
+    }
+
+    /* ============ INPUTS ============ */
+    .field {
+      width: 100%;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 14px 16px 14px 44px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .field:focus {
+      outline: none;
+      border-color: #a78bfa;
+      background: rgba(167, 139, 250, 0.04);
+      box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.1);
+    }
+    .field::placeholder { color: rgba(255,255,255,0.25); font-family: 'Plus Jakarta Sans', sans-serif; }
+    .field-wrap { position: relative; }
+    .field-wrap .rupee {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255,255,255,0.4);
+      font-weight: 600;
+      pointer-events: none;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .field-wrap .icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      pointer-events: none;
+    }
+    .field-with-icon { padding-left: 48px; }
+
+    /* Hide number input spinners */
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type=number] { -moz-appearance: textfield; }
+
+    /* ============ PROGRESS BAR ============ */
+    .bar-bg { background: rgba(255,255,255,0.06); border-radius: 999px; height: 8px; overflow: hidden; }
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #a78bfa, #22d3ee);
+      border-radius: 999px;
+      transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .bar-fill.danger { background: linear-gradient(90deg, #f87171, #fb923c); }
+    .bar-fill.warn   { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
+    .bar-fill.good   { background: linear-gradient(90deg, #34d399, #22d3ee); }
+
+    /* ============ PILLS / BADGES ============ */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.03);
+    }
+    .pill-danger { color: #f87171; border-color: rgba(248, 113, 113, 0.25); background: rgba(248, 113, 113, 0.08); }
+    .pill-warn   { color: #fbbf24; border-color: rgba(251, 191, 36, 0.25); background: rgba(251, 191, 36, 0.08); }
+    .pill-good   { color: #34d399; border-color: rgba(52, 211, 153, 0.25); background: rgba(52, 211, 153, 0.08); }
+    .pill-neon   { color: #a78bfa; border-color: rgba(167, 139, 250, 0.25); background: rgba(167, 139, 250, 0.08); }
+
+    /* ============ LOCKED PREMIUM SECTION ============ */
+    .locked-blur {
+      filter: blur(8px);
+      pointer-events: none;
+      user-select: none;
+      opacity: 0.6;
+    }
+
+    /* ============ MODAL ============ */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .modal-backdrop.open { opacity: 1; pointer-events: auto; }
+    .modal {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -45%) scale(0.95);
+      width: 92%;
+      max-width: 460px;
+      background: #0a0a0b;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 28px;
+      padding: 32px;
+      z-index: 101;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .modal.open {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* ============ ENTRANCE ANIMATIONS ============ */
+    @keyframes riseIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .rise-in { animation: riseIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+    .stagger > * { animation: riseIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+    .stagger > *:nth-child(1) { animation-delay: 0.05s; }
+    .stagger > *:nth-child(2) { animation-delay: 0.12s; }
+    .stagger > *:nth-child(3) { animation-delay: 0.19s; }
+    .stagger > *:nth-child(4) { animation-delay: 0.26s; }
+    .stagger > *:nth-child(5) { animation-delay: 0.33s; }
+    .stagger > *:nth-child(6) { animation-delay: 0.40s; }
+    .stagger > *:nth-child(7) { animation-delay: 0.47s; }
+    .stagger > *:nth-child(8) { animation-delay: 0.54s; }
+
+    /* ============ MARQUEE TICKER ============ */
+    .ticker {
+      overflow: hidden;
+      mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+      -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+    }
+    .ticker-track {
+      display: flex;
+      gap: 48px;
+      animation: scroll 40s linear infinite;
+      white-space: nowrap;
+      width: max-content;
+    }
+    @keyframes scroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ============ NUMBER FLIP ============ */
+    .num-large {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ============ DOT PULSE ============ */
+    .live-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #34d399;
+      box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%   { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7); }
+      70%  { box-shadow: 0 0 0 10px rgba(52, 211, 153, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+    }
+
+    /* ============ DONUT CHART ============ */
+    .donut-track { fill: none; stroke: rgba(255,255,255,0.08); stroke-width: 12; }
+    .donut-fill  { fill: none; stroke-width: 12; stroke-linecap: round; transition: stroke-dashoffset 1s cubic-bezier(0.22, 1, 0.36, 1); }
+
+    /* Mobile tweaks */
+    @media (max-width: 640px) {
+      .card { border-radius: 20px; }
+      .btn-neon, .btn-ghost { padding: 14px 22px; }
+    }
+  </style>
+</head>
+<body class="min-h-screen overflow-x-hidden">
+
+  <!-- ============ NAV ============ -->
+  <nav class="relative z-20 max-w-7xl mx-auto px-5 sm:px-8 py-5 flex items-center justify-between">
+    <div class="flex items-center gap-2.5">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-neon to-neon-2 flex items-center justify-center font-black text-black text-lg">M</div>
+      <div class="font-display font-bold text-lg tracking-tight">Midnight Money</div>
+    </div>
+    <div class="hidden sm:flex items-center gap-2 text-xs text-mute">
+      <div class="live-dot"></div>
+      <span class="font-mono">v1.0 · live</span>
+    </div>
+  </nav>
+
+  <!-- ============ HERO + INPUT ============ -->
+  <section id="hero" class="relative">
+    <div class="absolute inset-0 grid-backdrop"></div>
+    <div class="aurora"></div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 pt-8 sm:pt-14 pb-16">
+
+      <!-- Hero text -->
+      <div class="max-w-3xl">
+        <div class="pill pill-neon mb-6 rise-in">
+          <span>🌙</span>
+          <span>Built for Indian Gen Z</span>
+        </div>
+        <h1 class="font-display font-extrabold text-[42px] leading-[0.95] sm:text-7xl tracking-[-0.04em] mb-6 rise-in" style="animation-delay: 0.05s">
+          Find your <span class="text-gradient italic">money leaks</span>.<br/>
+          Stop bleeding cash at midnight.
+        </h1>
+        <p class="text-mute text-lg sm:text-xl leading-relaxed max-w-2xl mb-8 rise-in" style="animation-delay: 0.1s">
+          Drop in your monthly numbers. We'll show you exactly where your salary disappears, then give you a real plan to keep more of it. No fluff. No finance bro jargon.
+        </p>
+        <div class="flex flex-wrap gap-3 rise-in" style="animation-delay: 0.15s">
+          <button id="demo-btn" class="btn-ghost">
+            <span>⚡</span><span>Try Demo (no signup)</span>
+          </button>
+          <a href="#input" class="btn-neon">
+            <span>Start free</span>
+            <span>→</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Trust ticker -->
+      <div class="ticker mt-14 rise-in" style="animation-delay: 0.25s">
+        <div class="ticker-track text-mute text-sm font-mono">
+          <span>💸 Stop subscription bleed</span><span class="text-line-strong">✦</span>
+          <span>📈 Hit a 20% savings rate</span><span class="text-line-strong">✦</span>
+          <span>🏦 Build a 6-month emergency fund</span><span class="text-line-strong">✦</span>
+          <span>🪙 Start a SIP that actually sticks</span><span class="text-line-strong">✦</span>
+          <span>🧾 Audit your EMIs</span><span class="text-line-strong">✦</span>
+          <span>🍔 Outsmart Swiggy &amp; Zomato</span><span class="text-line-strong">✦</span>
+          <!-- duplicate for seamless scroll -->
+          <span>💸 Stop subscription bleed</span><span class="text-line-strong">✦</span>
+          <span>📈 Hit a 20% savings rate</span><span class="text-line-strong">✦</span>
+          <span>🏦 Build a 6-month emergency fund</span><span class="text-line-strong">✦</span>
+          <span>🪙 Start a SIP that actually sticks</span><span class="text-line-strong">✦</span>
+          <span>🧾 Audit your EMIs</span><span class="text-line-strong">✦</span>
+          <span>🍔 Outsmart Swiggy &amp; Zomato</span><span class="text-line-strong">✦</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ INPUT FORM ============ -->
+  <section id="input" class="relative py-12 sm:py-20">
+    <div class="max-w-5xl mx-auto px-5 sm:px-8">
+      <div class="grid lg:grid-cols-5 gap-6">
+
+        <!-- Header / context -->
+        <div class="lg:col-span-2 flex flex-col justify-between">
+          <div>
+            <div class="pill mb-4">
+              <span class="font-mono text-mute">01</span>
+              <span>Inputs</span>
+            </div>
+            <h2 class="font-display font-bold text-4xl sm:text-5xl tracking-tight leading-[1.05] mb-4">
+              Show us your <br/><span class="text-gradient italic">monthly map</span>.
+            </h2>
+            <p class="text-mute leading-relaxed mb-6">
+              Rough numbers are fine. We don't store any of this — analysis runs once and disappears with the tab.
+            </p>
+          </div>
+          <div class="card p-5 hidden lg:block">
+            <div class="text-xs text-mute font-mono mb-2">REAL TALK</div>
+            <p class="text-sm leading-relaxed">
+              The average urban Indian under 30 has <span class="text-neon font-semibold">no idea</span> where 40% of their salary actually goes. This tool fixes that in 60 seconds.
+            </p>
+          </div>
+        </div>
+
+        <!-- Form -->
+        <form id="budget-form" class="lg:col-span-3 card p-6 sm:p-8">
+          <!-- Income -->
+          <label class="block mb-6">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-semibold text-sm">Monthly Income (take-home)</span>
+              <span class="text-xs text-mute font-mono">after tax</span>
+            </div>
+            <div class="field-wrap">
+              <span class="rupee">₹</span>
+              <input id="income" name="income" type="number" min="0" step="100" placeholder="50,000" class="field" inputmode="numeric" required />
+            </div>
+          </label>
+
+          <div class="text-xs text-mute font-mono mb-3 mt-2 tracking-wider">MONTHLY EXPENSES</div>
+
+          <div class="grid sm:grid-cols-2 gap-4">
+            <label class="block">
+              <span class="text-sm text-white/70 mb-1.5 block">🏠 Rent & Housing</span>
+              <div class="field-wrap">
+                <span class="rupee">₹</span>
+                <input type="number" min="0" step="100" name="rent" placeholder="0" class="field" inputmode="numeric" />
+              </div>
+            </label>
+
+            <label class="block">
+              <span class="text-sm text-white/70 mb-1.5 block">🍔 Food & Groceries</span>
+              <div class="field-wrap">
+                <span class="rupee">₹</span>
+                <input type="number" min="0" step="100" name="food" placeholder="0" class="field" inputmode="numeric" />
+              </div>
+            </label>
+
+            <label class="block">
+              <span class="text-sm text-white/70 mb-1.5 block">🚇 Travel & Commute</span>
+              <div class="field-wrap">
+                <span class="rupee">₹</span>
+                <input type="number" min="0" step="100" name="travel" placeholder="0" class="field" inputmode="numeric" />
+              </div>
+            </label>
+
+            <label class="block">
+              <span class="text-sm text-white/70 mb-1.5 block">💡 Bills & Utilities</span>
+              <div class="field-wrap">
+                <span class="rupee">₹</span>
+                <input type="number" min="0" step="100" name="utilities" placeholder="0" class="field" inputmode="numeric" />
+              </div>
+            </label>
+
+            <label class="block">
+              <span class="text-sm text-white/70 mb-1.5 block">🎬 Entertainment & OTT</span>
+              <div class="field-wrap">
+                <span class="rupee">₹</span>
+                <input type="number" min="0" step="100" name="entertainment" placeholder="0" class="field" inputmode="numeric" />
+              </div>
+            </label>
+
+            <label class="block">
+              <span class="text-sm text-white/70 mb-1.5 block">🛍️ Shopping</span>
+              <div class="field-wrap">
+                <span class="rupee">₹</span>
+                <input type="number" min="0" step="100" name="shopping" placeholder="0" class="field" inputmode="numeric" />
+              </div>
+            </label>
+
+            <label class="block">
+              <span class="text-sm text-white/70 mb-1.5 block">💳 EMIs & Loans</span>
+              <div class="field-wrap">
+                <span class="rupee">₹</span>
+                <input type="number" min="0" step="100" name="emi" placeholder="0" class="field" inputmode="numeric" />
+              </div>
+            </label>
+
+            <label class="block">
+              <span class="text-sm text-white/70 mb-1.5 block">📦 Other</span>
+              <div class="field-wrap">
+                <span class="rupee">₹</span>
+                <input type="number" min="0" step="100" name="other" placeholder="0" class="field" inputmode="numeric" />
+              </div>
+            </label>
+          </div>
+
+          <div class="mt-7 flex flex-wrap gap-3 items-center">
+            <button type="submit" class="btn-neon" id="analyze-btn">
+              <span>Analyze my money</span>
+              <span>→</span>
+            </button>
+            <button type="button" class="btn-ghost" id="demo-btn-2">
+              <span>⚡</span><span>Use demo data</span>
+            </button>
+            <button type="button" class="text-mute text-sm hover:text-white transition px-2" id="reset-btn">Clear</button>
+          </div>
+
+          <p id="form-error" class="hidden mt-4 text-sm text-danger"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RESULTS ============ -->
+  <section id="results" class="relative py-12 sm:py-20 hidden">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+
+      <!-- Header -->
+      <div class="flex flex-wrap items-end justify-between gap-4 mb-10">
+        <div>
+          <div class="pill mb-4">
+            <span class="font-mono text-mute">02</span>
+            <span>Your report</span>
+          </div>
+          <h2 class="font-display font-bold text-4xl sm:text-5xl tracking-tight leading-[1.05]">
+            Here's your <span class="text-gradient italic">money mirror</span>.
+          </h2>
+        </div>
+        <button id="edit-btn" class="btn-ghost">
+          <span>←</span><span>Edit inputs</span>
+        </button>
+      </div>
+
+      <!-- KPI cards -->
+      <div id="kpi-row" class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 stagger mb-10">
+        <!-- Filled by JS -->
+      </div>
+
+      <!-- Health score + Donut -->
+      <div class="grid lg:grid-cols-5 gap-5 mb-10">
+        <!-- Health score -->
+        <div class="card p-7 lg:col-span-2 rise-in">
+          <div class="text-xs text-mute font-mono mb-2 tracking-wider">FINANCIAL HEALTH SCORE</div>
+          <div class="flex items-end gap-3 mb-1">
+            <div id="health-score" class="num-large text-7xl text-gradient">—</div>
+            <div class="text-mute mb-3 font-mono">/100</div>
+          </div>
+          <div id="health-grade" class="text-xl font-semibold mb-4">—</div>
+          <div class="bar-bg mb-3">
+            <div id="health-bar" class="bar-fill" style="width: 0%"></div>
+          </div>
+          <p id="health-msg" class="text-sm text-mute leading-relaxed">—</p>
+        </div>
+
+        <!-- Donut breakdown -->
+        <div class="card p-7 lg:col-span-3 rise-in" style="animation-delay: 0.1s">
+          <div class="text-xs text-mute font-mono mb-4 tracking-wider">WHERE YOUR MONEY GOES</div>
+          <div class="flex flex-col sm:flex-row items-center gap-6">
+            <div class="relative shrink-0">
+              <svg viewBox="0 0 120 120" width="180" height="180">
+                <circle cx="60" cy="60" r="50" class="donut-track"></circle>
+                <g id="donut-segments" transform="rotate(-90 60 60)"></g>
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                <div class="text-xs text-mute font-mono">SAVED</div>
+                <div id="donut-center" class="num-large text-2xl">—</div>
+              </div>
+            </div>
+            <div id="donut-legend" class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm min-w-0 w-full"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Breakdown bars -->
+      <div class="card p-6 sm:p-8 mb-10 rise-in" style="animation-delay: 0.15s">
+        <div class="flex items-center justify-between mb-5">
+          <div>
+            <div class="text-xs text-mute font-mono tracking-wider">CATEGORY BREAKDOWN</div>
+            <div class="font-display font-bold text-2xl mt-1">Healthy zones vs reality</div>
+          </div>
+          <div class="hidden sm:flex items-center gap-4 text-xs text-mute">
+            <div class="flex items-center gap-1.5"><span class="w-3 h-1 rounded-full bg-gradient-to-r from-neon to-neon-2"></span> Your spend</div>
+            <div class="flex items-center gap-1.5"><span class="w-3 h-1 rounded-full bg-white/20"></span> Healthy range</div>
+          </div>
+        </div>
+        <div id="breakdown-list" class="space-y-5"></div>
+      </div>
+
+      <!-- Free insights -->
+      <div class="mb-10">
+        <div class="flex items-center justify-between mb-5">
+          <div>
+            <div class="text-xs text-mute font-mono tracking-wider">FREE INSIGHTS</div>
+            <div class="font-display font-bold text-2xl sm:text-3xl mt-1">Quick reads, no paywall</div>
+          </div>
+          <div class="pill pill-good"><span>✓</span><span>Free</span></div>
+        </div>
+        <div id="free-insights" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 stagger"></div>
+      </div>
+
+      <!-- Premium teaser / unlocked content -->
+      <div id="premium-section">
+        <!-- Locked state -->
+        <div id="premium-locked" class="relative">
+          <!-- Blurred preview -->
+          <div class="card p-8 locked-blur">
+            <div class="text-xs text-mute font-mono mb-2">PREMIUM ROADMAP</div>
+            <div class="font-display font-bold text-2xl mb-4">Your 12-month optimization plan</div>
+            <div class="space-y-3">
+              <div class="flex justify-between border-b border-line py-3"><span>Reduce food spending by ₹2,000</span><span class="text-good">+₹24,000/yr</span></div>
+              <div class="flex justify-between border-b border-line py-3"><span>Audit subscriptions</span><span class="text-good">+₹9,600/yr</span></div>
+              <div class="flex justify-between border-b border-line py-3"><span>Refinance EMI to lower rate</span><span class="text-good">+₹18,000/yr</span></div>
+              <div class="flex justify-between py-3"><span>Automate 20% SIP</span><span class="text-good">+₹5L in 10 yrs</span></div>
+            </div>
+          </div>
+
+          <!-- Unlock CTA overlay -->
+          <div class="absolute inset-0 flex items-center justify-center p-5">
+            <div class="card p-7 sm:p-9 max-w-md w-full text-center" style="background: rgba(10, 10, 11, 0.92); backdrop-filter: blur(20px);">
+              <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-neon/30 to-neon-2/30 border border-neon/40 mb-5">
+                <span class="text-2xl">🔓</span>
+              </div>
+              <div class="pill pill-neon mb-3 mx-auto"><span>One-time payment</span></div>
+              <h3 class="font-display font-bold text-3xl sm:text-4xl mb-3 tracking-tight">Unlock your full plan</h3>
+              <p class="text-mute leading-relaxed mb-6 text-sm sm:text-base">
+                Detailed savings roadmap, a personalised SIP split, your projected 10-year wealth, and 8 actionable tips tailored to your numbers.
+              </p>
+              <div class="flex items-baseline justify-center gap-2 mb-6">
+                <div class="num-large text-5xl text-gradient">₹99</div>
+                <div class="text-mute text-sm">one-time</div>
+              </div>
+              <button id="unlock-btn" class="btn-neon w-full">
+                <span>Unlock Full Report</span><span>→</span>
+              </button>
+              <div class="flex items-center justify-center gap-4 mt-4 text-xs text-mute">
+                <span>🔒 Secured by Razorpay</span>
+                <span>·</span>
+                <span>UPI / Cards / Netbanking</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Unlocked state - filled by JS -->
+        <div id="premium-unlocked" class="hidden space-y-8"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="relative py-10 border-t border-line mt-20">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 flex flex-wrap items-center justify-between gap-4 text-sm text-mute">
+      <div class="flex items-center gap-2">
+        <div class="w-6 h-6 rounded-lg bg-gradient-to-br from-neon to-neon-2 flex items-center justify-center font-black text-black text-xs">M</div>
+        <span>Midnight Money Coach</span>
+      </div>
+      <div class="text-xs">Built with Razorpay · For educational purposes · Not financial advice</div>
+    </div>
+  </footer>
+
+  <!-- ============ PAYMENT STATUS MODAL ============ -->
+  <div id="modal-backdrop" class="modal-backdrop"></div>
+  <div id="status-modal" class="modal">
+    <div id="status-icon" class="w-14 h-14 rounded-2xl bg-gradient-to-br from-neon/30 to-neon-2/30 border border-neon/40 flex items-center justify-center mb-5 mx-auto">
+      <span id="status-emoji" class="text-2xl">⏳</span>
+    </div>
+    <h3 id="status-title" class="font-display font-bold text-2xl text-center mb-2">Processing...</h3>
+    <p id="status-body" class="text-mute text-center text-sm leading-relaxed mb-6">Hang tight while we verify your payment.</p>
+    <button id="status-close" class="btn-ghost w-full hidden">Close</button>
+  </div>
+
+  <!-- Razorpay checkout script -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <!-- App logic -->
+  <script src="/js/app.js"></script>
+</body>
+</html>
