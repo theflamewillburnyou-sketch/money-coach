@@ -415,7 +415,7 @@
     const planRows = optimizationPlan.map((p) => {
       const goodColor = p.monthlySaving > 0 ? 'text-good' : 'text-mute';
       return `
-        <div class="flex flex-wrap items-center justify-between gap-3 py-4 border-b border-line last:border-0">
+        <div class="flex flex-wrap items-center justify-between gap-0 py-4 border-b border-line last:border-0">
           <div class="flex items-center gap-3 min-w-0">
             <span class="text-xl">${p.icon}</span>
             <div class="min-w-0">
@@ -464,7 +464,7 @@
             <div class="font-display font-bold text-3xl sm:text-4xl tracking-tight">Your full money playbook</div>
             <div class="text-mute mt-2">Built for your exact numbers. Save this page or screenshot it.</div>
           </div>
-          <div class="text-right">
+          <div class="text-left sm:text-right">
             <div class="text-xs text-mute font-mono">POTENTIAL ANNUAL SAVINGS</div>
             <div class="num-large text-4xl sm:text-5xl text-gradient">${fmtINR(totals.potentialAnnualSavings)}</div>
           </div>

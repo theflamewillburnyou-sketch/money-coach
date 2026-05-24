@@ -84,6 +84,7 @@
       z-index: 0;
       filter: blur(80px);
       opacity: 0.55;
+      width: 100%;
     }
     .aurora::before, .aurora::after {
       content: '';
@@ -91,13 +92,13 @@
       border-radius: 50%;
     }
     .aurora::before {
-      width: 600px; height: 600px;
+      width: 100%; height: 600px;
       background: radial-gradient(circle, #a78bfa 0%, transparent 70%);
       top: -10%; left: -10%;
       animation: float1 18s ease-in-out infinite;
     }
     .aurora::after {
-      width: 500px; height: 500px;
+      width: 100%; height: 500px;
       background: radial-gradient(circle, #22d3ee 0%, transparent 70%);
       top: 20%; right: -10%;
       animation: float2 22s ease-in-out infinite;
@@ -687,7 +688,7 @@
   </section>
 
   <!-- ============ FOOTER ============ -->
-  <footer class="relative py-10 border-t border-line mt-20">
+  <footer class="relative py-10 border-t border-line mt-10">
     <div class="max-w-7xl mx-auto px-5 sm:px-8 flex flex-wrap items-center justify-between gap-4 text-sm text-mute">
       <div class="flex items-center gap-2">
         <div class="w-6 h-6 rounded-lg bg-gradient-to-br from-neon to-neon-2 flex items-center justify-center font-black text-black text-xs">M</div>

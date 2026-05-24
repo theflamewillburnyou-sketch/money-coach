@@ -12,39 +12,29 @@ const apiRouter = require('./routes/api');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Expose-Headers", "x-rtb-fingerprint-id, request-id");
+  next();
+});
 // ---------- Security ----------
 app.use(
   helmet({
-    // We need to allow Razorpay's checkout script and the Tailwind CDN
+    crossOriginResourcePolicy: { policy: "cross-origin" }, // Allows external assets to read cross-origin data safely
+    crossOriginOpenerPolicy: { policy: "unsafe-none" },    // Fixes communication blocks with popups/iframes
     contentSecurityPolicy: {
       useDefaults: true,
       directives: {
         "default-src": ["'self'"],
-        "script-src": [
-          "'self'",
-          "'unsafe-inline'",
-          "https://cdn.tailwindcss.com",
-          "https://checkout.razorpay.com",
-          "https://*.razorpay.com",
-        ],
-        "style-src": [
-          "'self'",
-          "'unsafe-inline'",
-          "https://fonts.googleapis.com",
-          "https://cdn.tailwindcss.com",
-        ],
-        "font-src": ["'self'", "https://fonts.gstatic.com", "data:"],
+        "script-src": ["'self'", "'unsafe-inline'", "https://cdn.tailwindcss.com", "https://checkout.razorpay.com"],
+        "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdn.tailwindcss.com"],
+        "font-src": ["'self'", "https://fonts.gstatic.com"],
+        "connect-src": ["'self'", "https://api.razorpay.com", "https://*.razorpay.com", "https://checkout.razorpay.com"],
+        "frame-src": ["'self'", "https://api.razorpay.com", "https://checkout.razorpay.com"],
         "img-src": ["'self'", "data:", "https:"],
-        "connect-src": ["'self'", "https://*.razorpay.com", "https://lumberjack.razorpay.com"],
-        "frame-src": ["'self'", "https://*.razorpay.com", "https://api.razorpay.com"],
-        "object-src": ["'none'"],
-        "base-uri": ["'self'"],
       },
     },
   })
 );
-
 app.use(
   cors({
     origin: process.env.CLIENT_ORIGIN || '*',
